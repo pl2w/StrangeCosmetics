@@ -1,6 +1,9 @@
 ﻿using BepInEx;
+using ExitGames.Client.Photon;
 using GorillaNetworking;
 using HarmonyLib;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,6 +88,7 @@ namespace StrangeCosmetics
             stream.Close();
 
             GameObject canvas = Instantiate(bundle.LoadAsset<GameObject>("ItemSlotsCanvas"));
+            canvas.AddComponent<OnTagEvent>();
             itemSlotOne = canvas.transform.Find("Slot1").gameObject.GetComponent<Text>();
             itemSlotTwo = canvas.transform.Find("Slot2").gameObject.GetComponent<Text>();
             itemSlotThree = canvas.transform.Find("Slot3").gameObject.GetComponent<Text>();
@@ -108,5 +112,20 @@ namespace StrangeCosmetics
     {
         public List<string> itemIds = new List<string>();
         public List<int> itemTags = new List<int>();
+    }
+
+    public class OnTagEvent : MonoBehaviourPunCallbacks, IOnEventCallback
+    {
+        public void OnEvent(EventData photonEvent)
+        {
+            if(photonEvent.Code == GorillaTagManager.ReportTagEvent || photonEvent.Code == GorillaTagManager.ReportInfectionTagEvent)
+            {
+                object[] data = photonEvent.CustomData as object[];
+                if(data[0].ToString() == PhotonNetwork.LocalPlayer.UserId)
+                {
+                    Plugin.OnTagPlayer();
+                }
+            }
+        }
     }
 }

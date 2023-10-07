@@ -393,7 +393,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches\OnGameInit.cs" />
-    <Compile Include="Patches\OnTagPatch.cs" />
     <Compile Include="Patches\OnWardrobeUpdatePatch.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
